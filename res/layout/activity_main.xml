@@ -58,8 +58,6 @@
         android:background="@drawable/left_hand_right_side" />
     
     
-    
-    
     <ImageView 
        android:id="@+id/head_left"
         android:layout_width="70dp"
