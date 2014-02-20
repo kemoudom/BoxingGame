@@ -6,11 +6,56 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity" >
+    tools:context=".MainActivity"
+    android:background="@android:color/white" >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+    <Button
+        android:id="@+id/right_punch"
+        android:layout_width="70dp"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="Right" />
+    
+    <Button
+        android:id="@+id/left_punch"
+        android:layout_width="70dp"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:text="Left" />
+    
+    <Button
+        android:id="@+id/left_right"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="100dp"
+        android:background="@drawable/left_right" />
+    
+    <Button
+        android:id="@+id/left_left"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/left_right" />
+    
+    <Button
+        android:id="@+id/right_left"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="100dp"
+        android:background="@drawable/right_left" />
+    
+    
+    <Button
+        android:id="@+id/right_right"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/right_left" />
 
 </RelativeLayout>
