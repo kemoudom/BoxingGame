@@ -9,6 +9,7 @@ import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -23,9 +24,7 @@ import android.widget.RelativeLayout;
 
 public class MainActivity extends Activity implements SensorEventListener {
 
-	
-
-	private final int ON_THE_LEFT = 0;
+	private final int ON_THE_LEFT = 0;	
 	private final int ON_THE_RIGHT = 1;
 	int side;
 	Button buttonLeft, buttonRight, leftSideLeftHand, leftSideRightHand,
@@ -45,6 +44,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 	
 	// Thread for playing music background
 	private BackgroundSound mBackgroundSound = new BackgroundSound();
+	
+	// Score
+	private long score=0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -285,6 +287,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 				headMoving = false;
 			}
 		});
+		
 	}
 
 	@Override
