@@ -1,5 +1,7 @@
 package com.challenge.boxinggame;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Context;
 import android.hardware.Sensor;
@@ -10,6 +12,7 @@ import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -21,11 +24,16 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity implements SensorEventListener {
 
 	private final int ON_THE_LEFT = 0;	
 	private final int ON_THE_RIGHT = 1;
+	private final int HEAD = 200;
+	private final int HAND = 300;
+	
 	int side;
 	Button buttonLeft, buttonRight, leftSideLeftHand, leftSideRightHand,
 			rightSideLeftHand, rightSideRightHand;
@@ -39,20 +47,33 @@ public class MainActivity extends Activity implements SensorEventListener {
 	private Sensor mAccelerometer;
 	private final float NOISE = (float) 2.0;
 
-	private Animation animTranslateHeadLeft, animTranslateHeadRight;
+	private Animation animTranslateHeadLeft, animTranslateHeadRight, animTranslateHeadLeftPC, animTranslateHeadRightPC;
 	private boolean headMoving = false;
+	TextView scoreRight, scoreLeft;
 	
 	// Thread for playing music background
 	private BackgroundSound mBackgroundSound = new BackgroundSound();
 	
 	// Score
-	private long score=0;
+	private long score=0, scorePC =0;
 
+	// Action for computer player
+	ArrayList<Integer> actions;
+	boolean dodgeRight,dodgeLeft, dodgeRightPC,dodgeLeftPC;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
+		
+		actions = new ArrayList<Integer>();
+		actions.add(1);
+		actions.add(2);
+		actions.add(3);
+		actions.add(4);
+		
+		dodgeLeft = false; dodgeRight = false;
 		
 		// play music
 		mBackgroundSound.execute();
@@ -60,6 +81,11 @@ public class MainActivity extends Activity implements SensorEventListener {
 		animTranslateHeadLeft = AnimationUtils.loadAnimation(this,
 				R.anim.anim_transalte_head_left);
 		animTranslateHeadRight = AnimationUtils.loadAnimation(this,
+				R.anim.anim_transalte_head_right);
+		
+		animTranslateHeadLeftPC = AnimationUtils.loadAnimation(this,
+				R.anim.anim_transalte_head_left);
+		animTranslateHeadRightPC = AnimationUtils.loadAnimation(this,
 				R.anim.anim_transalte_head_right);
 
 		final Animation animTranslateLeftSideRightHand = AnimationUtils
@@ -83,6 +109,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 		rightSideRightHand = (Button) findViewById(R.id.right_right);
 		headLeft = (ImageView) findViewById(R.id.head_left);
 		headRight = (ImageView) findViewById(R.id.head_right);
+		scoreLeft = (TextView) findViewById(R.id.score_left);
+		scoreRight = (TextView) findViewById(R.id.score_right);
 
 		buttonLeft.setOnClickListener(new OnClickListener() {
 
@@ -96,6 +124,24 @@ public class MainActivity extends Activity implements SensorEventListener {
 					rightSideLeftHand
 							.startAnimation(animTranslateRightSideLeftHand);
 				}
+				
+				Thread tr = new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						try {
+							Thread.sleep(HAND);
+							if(!dodgeLeftPC){
+								score++;
+							}
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				});
+            	tr.start();
 			}
 		});
 
@@ -111,44 +157,27 @@ public class MainActivity extends Activity implements SensorEventListener {
 					rightSideRightHand
 							.startAnimation(animTranslateRightSideRightHand);
 				}
+				
+				Thread tr = new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						try {
+							Thread.sleep(HAND);
+							if(!dodgeRightPC){
+								score++;
+							}
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				});
+            	tr.start();
 			}
 		});
 
-		leftSideLeftHand.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-
-			}
-		});
-
-		leftSideRightHand.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-
-			}
-		});
-
-		rightSideLeftHand.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-
-			}
-		});
-
-		rightSideRightHand.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-
-			}
-		});
 
 		animTranslateRightSideLeftHand
 				.setAnimationListener(new AnimationListener() {
@@ -169,6 +198,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 					public void onAnimationEnd(Animation animation) {
 						// TODO Auto-generated method stub
 						buttonLeft.setEnabled(true);
+						scoreRight.setText(""+score);
 					}
 				});
 
@@ -191,6 +221,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 					public void onAnimationEnd(Animation animation) {
 						// TODO Auto-generated method stub
 						buttonRight.setEnabled(true);
+						scoreRight.setText(""+score);
 					}
 				});
 
@@ -213,6 +244,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 					public void onAnimationEnd(Animation animation) {
 						// TODO Auto-generated method stub
 						buttonLeft.setEnabled(true);
+						scoreLeft.setText(""+scorePC);
 					}
 				});
 
@@ -235,6 +267,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 					public void onAnimationEnd(Animation animation) {
 						// TODO Auto-generated method stub
 						buttonRight.setEnabled(true);
+						scoreLeft.setText(""+scorePC);
 					}
 				});
 
@@ -246,12 +279,13 @@ public class MainActivity extends Activity implements SensorEventListener {
 		mSensorManager.registerListener(this, mAccelerometer,
 				SensorManager.SENSOR_DELAY_NORMAL);
 
-		animTranslateHeadLeft.setAnimationListener(new AnimationListener() {
+		animTranslateHeadLeftPC.setAnimationListener(new AnimationListener() {
 
 			@Override
 			public void onAnimationStart(Animation animation) {
 				// TODO Auto-generated method stub
 				headMoving = true;
+				dodgeLeftPC = true;
 			}
 
 			@Override
@@ -264,6 +298,53 @@ public class MainActivity extends Activity implements SensorEventListener {
 			public void onAnimationEnd(Animation animation) {
 				// TODO Auto-generated method stub
 				headMoving = false;
+				dodgeLeftPC = false;
+			}
+		});
+
+		animTranslateHeadRightPC.setAnimationListener(new AnimationListener() {
+
+			@Override
+			public void onAnimationStart(Animation animation) {
+				// TODO Auto-generated method stub
+				headMoving = true;
+				dodgeRightPC = true;
+			}
+
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				// TODO Auto-generated method stub
+				headMoving = false;
+				dodgeRightPC = false;
+			}
+		});
+		
+		animTranslateHeadLeft.setAnimationListener(new AnimationListener() {
+
+			@Override
+			public void onAnimationStart(Animation animation) {
+				// TODO Auto-generated method stub
+				headMoving = true;
+				dodgeLeft = true;
+			}
+
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				// TODO Auto-generated method stub
+				headMoving = false;
+				dodgeLeft = false;
 			}
 		});
 
@@ -273,6 +354,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 			public void onAnimationStart(Animation animation) {
 				// TODO Auto-generated method stub
 				headMoving = true;
+				dodgeRight = true;
 			}
 
 			@Override
@@ -285,8 +367,125 @@ public class MainActivity extends Activity implements SensorEventListener {
 			public void onAnimationEnd(Animation animation) {
 				// TODO Auto-generated method stub
 				headMoving = false;
+				dodgeRight = false;
 			}
 		});
+		
+		Thread referee = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		referee.start();
+		
+		
+		// Create Inner Thread Class
+        Thread background = new Thread(new Runnable() {
+             
+            // After call for background.start this run method call
+            public void run() {
+                try {
+
+                	while(true){
+                		Thread.sleep(1000);
+                		int action = (int) (Math.random() * ( 3 - 0 ));
+                		threadMsg(actions.get(action)+"");
+                	}
+
+                } catch (Throwable t) {
+                    // just end the background thread
+                    Log.i("Animation", "Thread  exception " + t);
+                }
+            }
+
+            private void threadMsg(String msg) {
+
+                if (!msg.equals(null) && !msg.equals("")) {
+                    Message msgObj = handler.obtainMessage();
+                    Bundle b = new Bundle();
+                    b.putString("message", msg);
+                    msgObj.setData(b);
+                    handler.sendMessage(msgObj);
+                }
+            }
+
+            // Define the Handler that receives messages from the thread and update the progress
+            private final Handler handler = new Handler() {
+
+                public void handleMessage(Message msg) {
+                     
+                    String aResponse = msg.getData().getString("message");
+
+                    if ((null != aResponse)) {
+
+                        if(aResponse.equals("1")){
+                        	leftSideRightHand
+							.startAnimation(animTranslateLeftSideRightHand);
+                        	Thread tr = new Thread(new Runnable() {
+								
+								@Override
+								public void run() {
+									// TODO Auto-generated method stub
+									try {
+										Thread.sleep(HAND);
+										if(!dodgeRight){
+											scorePC++;
+											
+										}
+									} catch (InterruptedException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+								}
+							});
+                        	tr.start();
+                        	
+                        }else if(aResponse.equals("2")){
+                        	leftSideLeftHand
+							.startAnimation(animTranslateLeftSideLeftHand);
+                        	Thread tr = new Thread(new Runnable() {
+								
+								@Override
+								public void run() {
+									// TODO Auto-generated method stub
+									try {
+										Thread.sleep(HAND);
+										if(!dodgeLeft){
+											scorePC++;
+											
+										}
+									} catch (InterruptedException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+								}
+							});
+                        	tr.start();
+                        }else if(aResponse.equals("3")){
+                        	headLeft.startAnimation(animTranslateHeadLeft);
+                        }else if(aResponse.equals("4")){
+                        	headLeft.startAnimation(animTranslateHeadRight);
+                        }
+                    }
+                    else
+                    {
+
+                            // ALERT MESSAGE
+                            Toast.makeText(
+                                    getBaseContext(),
+                                    "Not Got Response From Server.",
+                                    Toast.LENGTH_SHORT).show();
+                    }   
+
+                }
+            };
+
+        });
+        // Start Thread
+        background.start();  //After call start method thread called run Method
 		
 	}
 
@@ -385,4 +584,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 	        return null;
 	    }
 	}
+
+
 }

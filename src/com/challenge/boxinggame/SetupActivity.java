@@ -1,8 +1,6 @@
 package com.challenge.boxinggame;
 
 
-import com.challenge.communication.ConnexionManager;
-
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
@@ -44,8 +42,8 @@ public class SetupActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(SetupActivity.this, ConnexionManager.class);
-				 startActivity(intent);
+				//Intent intent = new Intent(SetupActivity.this, ConnexionManager.class);
+				 //startActivity(intent);
 			}
 		});
 	}	

@@ -19,34 +19,31 @@ class BluetoothClient extends Thread {
         blueDevice = device;
         this.blueAdapter=blueAdapter_;
 
-        // On recupere un objet BluetoothSocket grace Ã  l'objet BluetoothDevice
+        // On récupère un objet BluetoothSocket grâce à l'objet BluetoothDevice
         try {
-            // MON_UUID est l'UUID (comprenez identifiant serveur) de l'application. Cette valeur est nÃ©cessaire cotÃ© serveur egalement !
+            // MON_UUID est l'UUID (comprenez identifiant serveur) de l'application. Cette valeur est nécessaire côté serveur également !
             tmp = device.createRfcommSocketToServiceRecord(UUID.fromString("c065af87-b800-4bb3-a932-c4c130f2a50d"));
         } catch (IOException e) { }
         blueSocket = tmp;
     }
 
-    public void start() {
-        // On annule la decouverte des peropheriques (inutile puisqu'on est en train d'essayer de se connecter)
+    public void run() {
+        // On annule la découverte des périphériques (inutile puisqu'on est en train d'essayer de se connecter)
         blueAdapter.cancelDiscovery();
 
         try {
-            // On se connecte. Cet appel est bloquant jusqu'Ã  la reussite ou la levee d'une erreur
+            // On se connecte. Cet appel est bloquant jusqu'à la réussite ou la levée d'une erreur
             blueSocket.connect();
         } catch (IOException connectException) {
             // Impossible de se connecter, on ferme la socket et on tue le thread
             try {
                 blueSocket.close();
             } catch (IOException closeException) { }
-            Log.i("BTClient", "Fail to connect client socket");
             return;
         }
-        // Utilisez la connexion (dans un thread separe) pour faire ce que vous voulez
-        ConnectedThreadReading connectedThreadReading = new ConnectedThreadReading(blueSocket);
-        connectedThreadReading.start();
-        ConnectedThreadWriting connectedThreadWriting = new ConnectedThreadWriting(blueSocket);
-        connectedThreadWriting.start();
+
+        // Utilisez la connexion (dans un thread séparé) pour faire ce que vous voulez
+        manageConnectedSocket(blueSocket);
     }
 
     // Annule toute connexion en cours et tue le thread
@@ -58,6 +55,5 @@ class BluetoothClient extends Thread {
     
     public void manageConnectedSocket(BluetoothSocket blueSocket) {
     	Log.i("BTClient", "ManageConnectedSocket");
-        // here we put the hit on buttons !
     }
 }
