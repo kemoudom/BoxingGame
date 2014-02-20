@@ -32,7 +32,7 @@
         android:layout_height="50dp"
         android:layout_alignParentLeft="true"
         android:layout_marginTop="120dp"
-        android:background="@drawable/left_right" />
+        android:background="@drawable/right_hand_left_side" />
     
     <Button
         android:id="@+id/left_left"
@@ -40,16 +40,7 @@
         android:layout_height="50dp"
         android:layout_alignParentLeft="true"
         android:layout_marginTop="60dp"
-        android:background="@drawable/left_right" />
-    
-    <Button
-        android:id="@+id/right_left"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="120dp"
-        android:background="@drawable/right_left" />
-    
+        android:background="@drawable/left_hand_left_side" />
     
     <Button
         android:id="@+id/right_right"
@@ -57,7 +48,17 @@
         android:layout_height="50dp"
         android:layout_alignParentRight="true"
         android:layout_marginTop="60dp"
-        android:background="@drawable/right_left" />
+        android:background="@drawable/right_hand_right_side" />
+    <Button
+        android:id="@+id/right_left"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="120dp"
+        android:background="@drawable/left_hand_right_side" />
+    
+    
+    
     
     <ImageView 
        android:id="@+id/head_left"
