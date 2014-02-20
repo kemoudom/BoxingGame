@@ -16,4 +16,21 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="127dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send 1"
+        android:id="@+id/sendOne"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="107dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send 2"
+        android:id="@+id/sendTwo"
+        android:layout_alignTop="@+id/sendOne"
+        android:layout_alignParentRight="true" />
 </RelativeLayout>

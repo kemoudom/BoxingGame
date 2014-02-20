@@ -27,7 +27,7 @@ class BluetoothClient extends Thread {
         blueSocket = tmp;
     }
 
-    public void run() {
+    public void start() {
         // On annule la decouverte des peropheriques (inutile puisqu'on est en train d'essayer de se connecter)
         blueAdapter.cancelDiscovery();
 
@@ -39,11 +39,14 @@ class BluetoothClient extends Thread {
             try {
                 blueSocket.close();
             } catch (IOException closeException) { }
+            Log.i("BTClient", "Fail to connect client socket");
             return;
         }
-
         // Utilisez la connexion (dans un thread separe) pour faire ce que vous voulez
-        manageConnectedSocket(blueSocket);
+        ConnectedThreadReading connectedThreadReading = new ConnectedThreadReading(blueSocket);
+        connectedThreadReading.start();
+        ConnectedThreadWriting connectedThreadWriting = new ConnectedThreadWriting(blueSocket);
+        connectedThreadWriting.start();
     }
 
     // Annule toute connexion en cours et tue le thread
@@ -55,5 +58,6 @@ class BluetoothClient extends Thread {
     
     public void manageConnectedSocket(BluetoothSocket blueSocket) {
     	Log.i("BTClient", "ManageConnectedSocket");
+        // here we put the hit on buttons !
     }
 }
