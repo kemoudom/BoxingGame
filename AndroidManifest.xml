@@ -20,6 +20,11 @@
             android:screenOrientation="landscape" >
         </activity>
         <activity
+            android:name="com.challenge.communication.ConnexionManager"
+            android:label="@string/app_name"
+            android:screenOrientation="landscape" >
+        </activity>
+        <activity
             android:name="SetupActivity"
             android:label="@string/title_activity_setup" 
             >
