@@ -54,10 +54,11 @@ public class ConnexionManager extends Activity{
                     //Affichage des devices pair�s
                     s+="NAME:"+device.getName() + "\n" + "adress:"+device.getAddress()+"\n";
                     //Je cherche celui dont j'ai besoin (en fait les 2 tel avec lesquels j'ai teste
-                    if (device.getName().equals("HTC Dada")) {
-                        System.out.println("HTDADA FOUND");
+                    if (device.getName().equals("HTCFRANCK")) {
+                        System.out.println("HTCFRANCK FOUND");
                         this.htcDada=device;
                     }
+                    // TODO: change name later for boxer 1 and boxer 2
                     if (device.getName().equals("HTC Desire C")) {
                         this.htcC=device;
                         System.out.println("HTCC FOUND");
@@ -66,8 +67,6 @@ public class ConnexionManager extends Activity{
                 }
                 tv.setText(s);
             }
-
-
         }
     }
 
