@@ -6,21 +6,24 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 public class MainActivity extends Activity implements SensorEventListener {
+
+	
 
 	private final int ON_THE_LEFT = 0;
 	private final int ON_THE_RIGHT = 1;
@@ -38,13 +41,19 @@ public class MainActivity extends Activity implements SensorEventListener {
 	private final float NOISE = (float) 2.0;
 
 	private Animation animTranslateHeadLeft, animTranslateHeadRight;
-	private boolean headMoving = false;;
+	private boolean headMoving = false;
+	
+	// Thread for playing music background
+	private BackgroundSound mBackgroundSound = new BackgroundSound();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
+		
+		// play music
+		mBackgroundSound.execute();
 
 		animTranslateHeadLeft = AnimationUtils.loadAnimation(this,
 				R.anim.anim_transalte_head_left);
@@ -295,6 +304,19 @@ public class MainActivity extends Activity implements SensorEventListener {
 		super.onPause();
 		mSensorManager.unregisterListener(this);
 	}
+	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		if(mBackgroundSound!=null){
+			if(mBackgroundSound.player!=null){
+				mBackgroundSound.player.stop();
+				mBackgroundSound.player.release();
+			}
+			mBackgroundSound.cancel(true);
+		}
+	}
 
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -348,4 +370,16 @@ public class MainActivity extends Activity implements SensorEventListener {
 		}
 	}
 
+	public class BackgroundSound extends AsyncTask<Void, Void, Void> {
+		MediaPlayer player;
+	    
+		@Override
+	    protected Void doInBackground(Void... params) {
+	        player = MediaPlayer.create(MainActivity.this, R.raw.background); 
+	        player.setLooping(true); // Set looping 
+	        player.setVolume(100,100);
+	        player.start();		    
+	        return null;
+	    }
+	}
 }
