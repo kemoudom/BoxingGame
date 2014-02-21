@@ -3,6 +3,7 @@ package com.challenge.boxinggame;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -31,8 +32,11 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 	private final int ON_THE_LEFT = 0;	
 	private final int ON_THE_RIGHT = 1;
-	private final int HEAD = 200;
+	private final int HEAD = 100;
 	private final int HAND = 300;
+	private final long MAX_SCORE = 30;
+	
+	boolean gameOver = false;
 	
 	int side;
 	Button buttonLeft, buttonRight, leftSideLeftHand, leftSideRightHand,
@@ -134,6 +138,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 							Thread.sleep(HAND);
 							if(!dodgeLeftPC){
 								score++;
+								if(score==MAX_SCORE){
+									gameover();
+								}
 							}
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
@@ -167,6 +174,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 							Thread.sleep(HAND);
 							if(!dodgeRightPC){
 								score++;
+								if(scorePC==MAX_SCORE){
+									gameover();
+								}
 							}
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
@@ -389,7 +399,7 @@ public class MainActivity extends Activity implements SensorEventListener {
             public void run() {
                 try {
 
-                	while(true){
+                	while(!gameOver){
                 		Thread.sleep(1000);
                 		int action = (int) (Math.random() * ( 3 - 0 ));
                 		threadMsg(actions.get(action)+"");
@@ -433,6 +443,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 										Thread.sleep(HAND);
 										if(!dodgeRight){
 											scorePC++;
+											if(scorePC==MAX_SCORE){
+												gameover();
+											}
 											
 										}
 									} catch (InterruptedException e) {
@@ -455,7 +468,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 										Thread.sleep(HAND);
 										if(!dodgeLeft){
 											scorePC++;
-											
+											if(scorePC==MAX_SCORE){
+												gameover();
+											}
 										}
 									} catch (InterruptedException e) {
 										// TODO Auto-generated catch block
@@ -585,5 +600,59 @@ public class MainActivity extends Activity implements SensorEventListener {
 	    }
 	}
 
+	public void gameover(){
+		
+		gameOver = true;
+		Message msgObj = handler.obtainMessage();
+        Bundle b = new Bundle();
+        b.putString("message", "abc");
+        msgObj.setData(b);
+        handler.sendMessage(msgObj);
+		
+		//scoreLeft.setText("0");
+		//scoreRight.setText("0");
+		
+		
+	}
+	
+	private final Handler handler = new Handler() {
+		 
+        public void handleMessage(Message msg) {
+             
+            String aResponse = msg.getData().getString("message");
+
+            final Dialog dialog = new Dialog(MainActivity.this);
+    		dialog.setContentView(R.layout.dialog_layout);
+    		dialog.setTitle("GAME OVER");
+
+    		// set the custom dialog components - text, image and
+    		// button
+    		TextView text = (TextView) dialog
+    				.findViewById(R.id.text);
+    		if(score==MAX_SCORE){
+    			text.setText("You WON!");
+    		}else{
+    			text.setText("You LOST!");
+    		}
+    		ImageView image = (ImageView) dialog
+    				.findViewById(R.id.image);
+    		image.setVisibility(View.GONE);
+    		Button dialogButton = (Button) dialog
+    				.findViewById(R.id.dialogButtonOK);
+    		// if button is clicked, close the custom dialog
+    		dialogButton.setOnClickListener(new OnClickListener() {
+    			@Override
+    			public void onClick(View v) {
+    				dialog.dismiss();
+    			}
+    		});
+
+    		dialog.show();
+    		
+    		score = 0;
+    		scorePC = 0;
+
+        }
+    };
 
 }
